@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -20,6 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AuthorDaoImplIntegrationTests {
 
     private AuthorDaoImpl underTest;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     public AuthorDaoImplIntegrationTests(AuthorDaoImpl underTest) {
@@ -54,5 +57,38 @@ public class AuthorDaoImplIntegrationTests {
         assertThat(result)
                 .hasSize(3)
                 .containsExactlyInAnyOrder(authorA, authorB, authorC);
+    }
+
+    @Test
+    public void testThatAuthorCanBeUpdated(){
+        Author author = TestDataUtil.createTestAuthorA();
+
+        Long oldId = author.getId();
+        Long newId = 7L;
+
+        underTest.create(author);
+        author.setName("UPDATED");
+        author.setAge(42);
+        author.setId(newId);
+        underTest.update(oldId, author);
+
+        Optional<Author> result = underTest.findOne(newId);
+
+        assertThat(result).isPresent();
+        assertThat(result.get().getName()).isEqualTo("UPDATED");
+        assertThat(result.get().getAge()).isEqualTo(42);
+        assertThat(result.get().getId()).isEqualTo(7L);
+
+    }
+
+    @Test
+    public void testThatAuthorCanBeDeleted(){
+        Author authorA = TestDataUtil.createTestAuthorA();
+
+        underTest.create(authorA);
+        underTest.delete(authorA.getId());
+
+        Optional<Author> result = underTest.findOne(authorA.getId());
+        assertThat(result).isEmpty();
     }
 }

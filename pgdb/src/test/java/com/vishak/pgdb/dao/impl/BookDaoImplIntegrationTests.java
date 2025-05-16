@@ -74,4 +74,44 @@ public class BookDaoImplIntegrationTests {
 
 
     }
+
+    @Test
+    public void testThatBookCanBeUpdated(){
+        Author authorA = TestDataUtil.createTestAuthorA();
+        Author authorB = TestDataUtil.createTestAuthorB();
+
+        authorDao.create(authorA);
+        authorDao.create(authorB);
+
+
+        Book bookA = TestDataUtil.createTestBookA();
+        bookA.setAuthorId(authorA.getId());
+        underTest.create(bookA);
+        Book newBook = TestDataUtil.createTestBookB();
+        newBook.setIsbn("Test-ISBN");
+        newBook.setAuthorId(authorB.getId());
+
+        underTest.update(bookA.getIsbn(),newBook);
+
+        Optional<Book> result = underTest.findOne(newBook.getIsbn());
+
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(newBook);
+
+
+    }
+
+    @Test
+    public void testThatBookCanBeDeleted(){
+        Author author = TestDataUtil.createTestAuthorA();
+        authorDao.create(author);
+        Book book = TestDataUtil.createTestBookA();
+        book.setAuthorId(author.getId());
+        underTest.create(book);
+        underTest.delete(book.getIsbn());
+        Optional<Book> result = underTest.findOne(book.getIsbn());
+        assertThat(result).isEmpty();
+    }
+
+
 }
