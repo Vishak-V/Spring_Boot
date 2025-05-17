@@ -61,18 +61,16 @@ public class AuthorRepositoryIntegrationTests {
 
     @Test
     public void testThatAuthorCanBeUpdated(){
-        AuthorEntity author = TestDataUtil.createTestAuthorA();
+        AuthorEntity author = TestDataUtil.createTestAuthorC();
 
         underTest.save(author);
         author.setName("UPDATED");
-        author.setAge(42);
         underTest.save(author);
 
         Optional<AuthorEntity> result = underTest.findById(author.getId());
 
         assertThat(result).isPresent();
-        assertThat(result.get().getName()).isEqualTo("UPDATED");
-        assertThat(result.get().getAge()).isEqualTo(42);
+        assertThat(result.get()).isEqualTo(author);
 
     }
 

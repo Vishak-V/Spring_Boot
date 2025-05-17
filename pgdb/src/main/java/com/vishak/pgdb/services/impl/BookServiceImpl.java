@@ -3,6 +3,8 @@ package com.vishak.pgdb.services.impl;
 import com.vishak.pgdb.domain.Entities.BookEntity;
 import com.vishak.pgdb.repositories.BookRepository;
 import com.vishak.pgdb.services.BookService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.awt.print.Book;
@@ -32,6 +34,11 @@ public class BookServiceImpl implements BookService {
                 .findAll()
                 .spliterator(),false)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<BookEntity> findAll(Pageable pageable){
+        return bookRepository.findAll(pageable);
     }
 
     @Override
