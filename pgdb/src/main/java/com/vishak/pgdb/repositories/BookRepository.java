@@ -1,9 +1,9 @@
 package com.vishak.pgdb.repositories;
 
-import com.vishak.pgdb.domain.Book;
+import com.vishak.pgdb.domain.Entities.BookEntity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface BookRepository extends CrudRepository<Book,String> {
+public interface BookRepository extends CrudRepository<BookEntity,String> {
 }

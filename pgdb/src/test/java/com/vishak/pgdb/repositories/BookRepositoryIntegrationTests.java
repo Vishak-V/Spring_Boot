@@ -1,8 +1,8 @@
 package com.vishak.pgdb.repositories;
 
 import com.vishak.pgdb.TestDataUtil;
-import com.vishak.pgdb.domain.Author;
-import com.vishak.pgdb.domain.Book;
+import com.vishak.pgdb.domain.Entities.AuthorEntity;
+import com.vishak.pgdb.domain.Entities.BookEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,13 +31,13 @@ public class BookRepositoryIntegrationTests {
 
     @Test
     public void testThatBookCanBeRetrieved(){
-        Author author = TestDataUtil.createTestAuthorA();
+        AuthorEntity author = TestDataUtil.createTestAuthorA();
 
-        Book book = TestDataUtil.createTestBookA(author);
+        BookEntity book= TestDataUtil.createTestBookEntityA(author);
 
         underTest.save(book);
 
-        Optional<Book> result = underTest.findById(book.getIsbn());
+        Optional<BookEntity> result = underTest.findById(book.getIsbn());
 
         assertThat(result).isPresent();
         assertThat(result.get().getIsbn()).isEqualTo(book.getIsbn());
@@ -53,17 +52,17 @@ public class BookRepositoryIntegrationTests {
     @Test
     public void testThatMultipleBooksCanBeRetrieved(){
 
-        Author author = TestDataUtil.createTestAuthorA();
+        AuthorEntity author = TestDataUtil.createTestAuthorA();
         authorRepository.save(author);
-        Book bookA = TestDataUtil.createTestBookA(author);
-        Book bookB = TestDataUtil.createTestBookB(author);
-        Book bookC = TestDataUtil.createTestBookC(author);
+        BookEntity bookA = TestDataUtil.createTestBookEntityA(author);
+        BookEntity bookB = TestDataUtil.createTestBookB(author);
+        BookEntity bookC = TestDataUtil.createTestBookC(author);
 
         underTest.save(bookA);
         underTest.save(bookB);
         underTest.save(bookC);
 
-        Iterable<Book> result = underTest.findAll();
+        Iterable<BookEntity> result = underTest.findAll();
 
         assertThat(result)
                 .hasSize(3)
@@ -74,22 +73,22 @@ public class BookRepositoryIntegrationTests {
 
     @Test
     public void testThatBookCanBeUpdated(){
-        Author authorA = TestDataUtil.createTestAuthorA();
-        Author authorB = TestDataUtil.createTestAuthorB();
+        AuthorEntity authorA = TestDataUtil.createTestAuthorA();
+        AuthorEntity authorB = TestDataUtil.createTestAuthorB();
 
         authorRepository.save(authorA);
         authorRepository.save(authorB);
 
 
-        Book bookA = TestDataUtil.createTestBookA(authorA);
+        BookEntity bookA = TestDataUtil.createTestBookEntityA(authorA);
 
         underTest.save(bookA);
-        Book newBook = TestDataUtil.createTestBookB(authorB);
+        BookEntity newBook = TestDataUtil.createTestBookB(authorB);
         newBook.setIsbn("Test-ISBN");
 
         underTest.save(newBook);
 
-        Optional<Book> result = underTest.findById(newBook.getIsbn());
+        Optional<BookEntity> result = underTest.findById(newBook.getIsbn());
 
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(newBook);
@@ -99,14 +98,16 @@ public class BookRepositoryIntegrationTests {
 
     @Test
     public void testThatBookCanBeDeleted(){
-        Author author = TestDataUtil.createTestAuthorA();
+        AuthorEntity author= TestDataUtil.createTestAuthorA();
         authorRepository.save(author);
-        Book book = TestDataUtil.createTestBookA(author);
+        BookEntity book = TestDataUtil.createTestBookEntityA(author);
         underTest.save(book);
         underTest.deleteById(book.getIsbn());
-        Optional<Book> result = underTest.findById(book.getIsbn());
+        Optional<BookEntity> result = underTest.findById(book.getIsbn());
         assertThat(result).isEmpty();
     }
+
+
 
 
 }
